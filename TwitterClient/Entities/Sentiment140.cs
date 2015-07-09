@@ -54,10 +54,10 @@ namespace TwitterClient
 
         enum SentimentScore
         {
-            Positive = 4,
-            Neutral = 2,
-            Negative = 0,
-            Undefined = -1
+            Positive = 1,
+            Neutral = 0,
+            Negative = -1,
+            Undefined = 0
         }
 
         static SentimentScore Analyze(string textToAnalyze)
@@ -108,6 +108,8 @@ namespace TwitterClient
         /// <returns></returns>
         static string DetermineTopc(string tweetText, string keywordFilters)
         {
+            string tweetTextUpper = tweetText.ToUpper();
+
             if (string.IsNullOrEmpty(tweetText))
                 return string.Empty;
 
@@ -120,6 +122,12 @@ namespace TwitterClient
             foreach (string keyPhrase in keyPhrases)
             {
                 subject = keyPhrase;
+
+
+                if (tweetTextUpper.Contains(keyPhrase.ToUpper()))
+                {
+                    return keyPhrase;
+                }
 
                 //a key phrase may have multiple key words, like: Windows Phone.  If this is the case we will only assign it a subject if both words are 
                 //included and in the correct order. For example, a tweet will match if "Windows 8" is found within the tweet but will not match if
@@ -146,7 +154,6 @@ namespace TwitterClient
                     }
                 }
             }
-
             return "Unknown";
         }
     }

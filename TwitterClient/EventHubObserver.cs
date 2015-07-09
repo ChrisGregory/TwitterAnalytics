@@ -45,14 +45,13 @@ namespace TwitterClient
         {
             try
             {
-                if (TwitterPayloadData.Topic != "Unknown")
+                if (TwitterPayloadData.Topic != "Unknown" && TwitterPayloadData.Topic != "")
                 {
                     var serialisedString = JsonConvert.SerializeObject(TwitterPayloadData);
                     EventData data = new EventData(Encoding.UTF8.GetBytes(serialisedString)) { PartitionKey = TwitterPayloadData.Topic };
                     _eventHubClient.Send(data);
                                
                     Console.ForegroundColor = ConsoleColor.Yellow;
-
                     Console.WriteLine("Sending" + serialisedString + " at: " + TwitterPayloadData.CreatedAt.ToString());                
                 }                
             }

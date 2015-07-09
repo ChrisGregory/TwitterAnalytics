@@ -79,8 +79,11 @@ namespace TwitterClient
                 {
                     var result = (Tweet)jsonSerializer.ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(line)));
                     result.RawJson = line;
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\n" + result.User.Name + ": " + result.Text);
+                    if (result.Text != null)
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(result.Text);
+                    }
                     yield return result;
                 }
 
