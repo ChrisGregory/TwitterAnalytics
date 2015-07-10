@@ -23,25 +23,33 @@ namespace TwitterClient
     {
         static void Main(string[] args)
         {
-            //Configure Twitter OAuth
-            var oauthToken = ConfigurationManager.AppSettings["oauth_token"];
-            var oauthTokenSecret = ConfigurationManager.AppSettings["oauth_token_secret"];
-            var oauthCustomerKey = ConfigurationManager.AppSettings["oauth_consumer_key"];
-            var oauthConsumerSecret = ConfigurationManager.AppSettings["oauth_consumer_secret"];
-            var keywords = ConfigurationManager.AppSettings["twitter_keywords"];
+            while (true)
+            {
+                try
+                {
+                    //Configure Twitter OAuth
+                    var oauthToken = ConfigurationManager.AppSettings["oauth_token"];
+                    var oauthTokenSecret = ConfigurationManager.AppSettings["oauth_token_secret"];
+                    var oauthCustomerKey = ConfigurationManager.AppSettings["oauth_consumer_key"];
+                    var oauthConsumerSecret = ConfigurationManager.AppSettings["oauth_consumer_secret"];
+                    var keywords = ConfigurationManager.AppSettings["twitter_keywords"];
 
-            //Configure EventHub
-            var config = new EventHubConfig();
-            config.ConnectionString = ConfigurationManager.AppSettings["EventHubConnectionString"];
-            config.EventHubName = ConfigurationManager.AppSettings["EventHubName"];
-            var myEventHubObserver = new EventHubObserver(config);
+                    //Configure EventHub
+                    var config = new EventHubConfig();
+                    config.ConnectionString = ConfigurationManager.AppSettings["EventHubConnectionString"];
+                    config.EventHubName = ConfigurationManager.AppSettings["EventHubName"];
+                    var myEventHubObserver = new EventHubObserver(config);
 
-            var datum = Tweet.StreamStatuses(new TwitterConfig(oauthToken, oauthTokenSecret, oauthCustomerKey, oauthConsumerSecret,
-                keywords)).Select(tweet => Sentiment.ComputeScore(tweet, keywords)).Select(tweet => new Payload { CreatedAt=tweet.CreatedAt,Topic =tweet.Topic ,SentimentScore =tweet.SentimentScore, UserName=tweet.UserName, Text = tweet.Text });
+                    var datum = Tweet.StreamStatuses(new TwitterConfig(oauthToken, oauthTokenSecret, oauthCustomerKey, oauthConsumerSecret,
+                        keywords)).Select(tweet => Sentiment.ComputeScore(tweet, keywords)).Select(tweet => new Payload { CreatedAt = tweet.CreatedAt, Topic = tweet.Topic, SentimentScore = tweet.SentimentScore, UserName = tweet.UserName, Text = tweet.Text });
 
-            datum.ToObservable().Subscribe(myEventHubObserver);
-           
+                    datum.ToObservable().Subscribe(myEventHubObserver);
+                }
+                catch (Exception e)
+                {
 
+                }
+            }
         }
     }
 }

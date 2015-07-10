@@ -108,7 +108,11 @@ namespace TwitterClient
         /// <returns></returns>
         static string DetermineTopc(string tweetText, string keywordFilters)
         {
-            string tweetTextUpper = tweetText.ToUpper();
+            string tweetTextUpper = "";
+            if (tweetText != null)
+            {
+                tweetTextUpper = tweetText.ToUpper();
+            }
 
             if (string.IsNullOrEmpty(tweetText))
                 return string.Empty;
